@@ -1,6 +1,5 @@
 package com.ram.weather.presentation.components
 
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
