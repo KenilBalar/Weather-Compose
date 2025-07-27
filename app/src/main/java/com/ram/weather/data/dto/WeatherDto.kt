@@ -4,6 +4,7 @@ package com.ram.weather.data.dto
  * @author ASUS
  * @date 21-07-2025
  */
+
 data class WeatherDto(
     val lat: Double,
     val lon: Double,
