@@ -1,8 +1,12 @@
 package com.ram.weather.presentation.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 
 /**
@@ -11,15 +15,19 @@ import coil.compose.AsyncImage
  */
 @Composable
 fun ImageView(
-    imageUrl: String,
+    drawable: Int,
     contentDescription: String? = null,
+    alignment: Alignment = Alignment.Center,
     modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Crop
+    contentScale: ContentScale = ContentScale.Crop,
+    colorFilter: ColorFilter? = null
 ) {
-    AsyncImage(
-        model = imageUrl,
+    Image(
+        painter = painterResource(drawable),
         contentDescription = contentDescription,
+        alignment = alignment,
         modifier = modifier,
-        contentScale = contentScale
+        contentScale = contentScale,
+        colorFilter = colorFilter
     )
 }
