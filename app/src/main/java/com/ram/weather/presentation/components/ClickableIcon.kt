@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.ram.weather.ui.theme.getOnSurfaceColor
 
 /**
  * @author ASUS
@@ -32,7 +33,7 @@ fun ClickableImageView(
     alignment: Alignment = Alignment.Center,
     modifier: Modifier = Modifier.padding(8.dp),
     contentScale: ContentScale = ContentScale.Crop,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(getOnSurfaceColor()),
     onClick: () -> Unit
 ) {
     val shape = CircleShape // or RoundedCornerShape(12.dp)

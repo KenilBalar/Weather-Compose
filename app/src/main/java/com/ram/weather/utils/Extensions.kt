@@ -15,7 +15,7 @@ fun Context.showToast(message : String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
-fun Context.loadStaticWeatherInfo(): WeatherInfo? {
+fun Context.loadStaticWeatherInfo(): WeatherInfo {
     return try {
         val inputStream = resources.openRawResource(R.raw.static_weather_response)
         val json = inputStream.bufferedReader().use { it.readText() }
@@ -23,9 +23,9 @@ fun Context.loadStaticWeatherInfo(): WeatherInfo? {
         val moshi = Moshi.Builder().build()
         val adapter = moshi.adapter(WeatherDto::class.java)
 
-        adapter.fromJson(json)?.toWeatherInfo()
+        adapter.fromJson(json)?.toWeatherInfo() ?: WeatherInfo()
     } catch (e: Exception) {
         e.printStackTrace()
-        null
+        WeatherInfo()
     }
 }

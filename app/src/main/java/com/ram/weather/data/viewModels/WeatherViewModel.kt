@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Objects
 import javax.inject.Inject
 
 /**
@@ -32,8 +33,8 @@ class WeatherViewModel @Inject constructor(
     private val _currentCity = MutableStateFlow("Düsseldorf")
     val currentCity: StateFlow<String> = _currentCity.asStateFlow()
 
-    private val _currentWeather = MutableStateFlow<CurrentWeather?>(null)
-    val currentWeather: StateFlow<CurrentWeather?> = _currentWeather.asStateFlow()
+    private val _currentWeather = MutableStateFlow<CurrentWeather>(CurrentWeather())
+    val currentWeather: StateFlow<CurrentWeather> = _currentWeather.asStateFlow()
 
     private val _dailyForecast = MutableStateFlow<List<HourlyWeather>>(emptyList())
     val dailyForecast: StateFlow<List<HourlyWeather>> = _dailyForecast.asStateFlow()
@@ -57,8 +58,8 @@ class WeatherViewModel @Inject constructor(
             delay(1500)
             withContext(Dispatchers.Main) {
                 _isLoading.value = false
-                _currentCity.value = "Mülheim an der Ruhr"
-                _currentWeather.value = weatherInfo?.current
+                _currentCity.value = "Berlin"
+                _currentWeather.value = weatherInfo.current
                 _hourlyForecast.value = weatherInfo?.hourly ?: emptyList()
             }
 
