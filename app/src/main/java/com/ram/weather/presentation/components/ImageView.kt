@@ -18,9 +18,9 @@ import com.ram.weather.ui.theme.getOnSurfaceColor
 @Composable
 fun ImageView(
     drawable: Int,
+    modifier: Modifier = Modifier,
     contentDescription: String? = null,
     alignment: Alignment = Alignment.Center,
-    modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
     colorFilter: ColorFilter? = null
 ) {

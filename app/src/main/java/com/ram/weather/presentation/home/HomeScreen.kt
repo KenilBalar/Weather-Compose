@@ -3,8 +3,6 @@ package com.ram.weather.presentation.home
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,11 +15,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,10 +33,12 @@ import com.ram.weather.presentation.components.ImageView
 import com.ram.weather.presentation.components.SpaceHorizontal
 import com.ram.weather.presentation.components.TextBold
 import com.ram.weather.presentation.components.TextMedium
+import com.ram.weather.ui.theme.getBlueColor
 import com.ram.weather.ui.theme.getOnSurfaceColor
+import com.ram.weather.ui.theme.getRedColor
 import com.ram.weather.ui.theme.getSurfaceColor
 import com.ram.weather.utils.Utils
-import com.ram.weather.utils.showToast
+import kotlin.math.roundToInt
 
 /**
  * @author ASUS
@@ -72,7 +70,7 @@ fun HomeUI(viewModel: WeatherViewModel = hiltViewModel()) {
     }
 }
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
 fun TemperatureSegment(viewModel: WeatherViewModel = hiltViewModel()) {
     val loading = viewModel.isLoading.collectAsState()
@@ -89,7 +87,7 @@ fun TemperatureSegment(viewModel: WeatherViewModel = hiltViewModel()) {
     }
 }
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
 fun TopBar(viewModel: WeatherViewModel = hiltViewModel()) {
     var context = LocalContext.current
@@ -108,7 +106,7 @@ fun TopBar(viewModel: WeatherViewModel = hiltViewModel()) {
     {
         Button(
             colors = ButtonDefaults.buttonColors(containerColor = getSurfaceColor(), contentColor = getOnSurfaceColor()),
-            onClick = {  },
+            onClick = { },
         ) {
             TextMedium(currentCity.value, fontSize = 20.sp)
             SpaceHorizontal(6)
@@ -123,23 +121,61 @@ fun TopBar(viewModel: WeatherViewModel = hiltViewModel()) {
     }
 }
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun WeatherInfoSection(viewModel: WeatherViewModel = hiltViewModel()){
+fun WeatherInfoSection(viewModel: WeatherViewModel = hiltViewModel()) {
     var currentWeather = viewModel.currentWeather.collectAsState()
+    var todayWeather = viewModel.todayWeather.collectAsState()
     var currentWeatherData = currentWeather.value
+    var todayWeatherData = todayWeather.value
     Box(modifier = Modifier.padding(horizontal = 20.dp)) {
         ConstraintLayout {
-            val (ivWeather, tvCurrentTemp, tvHighTemp, tvLowTemp, tvWeatherInfo, tvFeelsLike) = createRefs()
+            val (ivWeather, tvCurrentTemp, layoutTempHighLow, tvWeatherInfo, tvFeelsLike) = createRefs()
             ImageView(
-                modifier = Modifier.size(96.dp).constrainAs(ivWeather) { top.linkTo(parent.top) }
-                    .constrainAs(ivWeather) { start.linkTo(parent.start) },
+                modifier = Modifier
+                    .size(96.dp)
+                    .constrainAs(ivWeather) {
+                        top.linkTo(parent.top);
+                        start.linkTo(parent.start)
+                    },
                 drawable = IconSelector.getIcon(currentWeatherData.condition.iconCode)
             )
+            TextBold(
+                text = currentWeatherData.temperature.roundToInt().toString().plus("°"), fontSize = 36.sp,
+                modifier = Modifier
+                    .padding(start = 12.dp, top = 10.dp)
+                    .constrainAs(tvCurrentTemp) {
+                        start.linkTo(ivWeather.end);
+                        top.linkTo(ivWeather.top)
+                    })
 
-            TextBold(text = currentWeatherData.temperature.toString().plus("°C"), fontSize = 32.sp,
-                modifier = Modifier.padding(start = 12.dp, top = 10.dp).constrainAs(tvCurrentTemp) { start.linkTo(ivWeather.end) }
-                    .constrainAs(tvCurrentTemp) { top.linkTo(ivWeather.top) })>
+            Row(modifier = Modifier
+                .padding(top = 10.dp)
+                .constrainAs(layoutTempHighLow) {
+                    start.linkTo(tvCurrentTemp.end)
+                    end.linkTo(parent.end)
+                    top.linkTo(tvCurrentTemp.top)
+                    bottom.linkTo(tvCurrentTemp.bottom)
+                }
+                .padding(start = 20.dp)) {
+
+                ImageView(drawable = R.drawable.ic_temp_high)
+                SpaceHorizontal(6)
+                TextBold(
+                    text = todayWeatherData.maxTemp.toDouble().roundToInt().toString().plus("°"),
+                    fontSize = 16.sp,
+                    color = getRedColor()
+                )
+                SpaceHorizontal(10)
+                ImageView(drawable = R.drawable.ic_temp_low)
+                SpaceHorizontal(6)
+                TextBold(
+                    text = todayWeatherData.minTemp.toDouble().roundToInt().toString().plus("°"),
+                    fontSize = 16.sp,
+                    color = getBlueColor()
+                )
+            }
+
         }
     }
 }

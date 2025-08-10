@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ram.weather.data.model.CurrentWeather
 import com.ram.weather.data.model.HourlyWeather
+import com.ram.weather.data.model.TodayWeather
 import com.ram.weather.data.repository.WeatherRepository
 import com.ram.weather.utils.Utils
 import com.ram.weather.utils.loadStaticWeatherInfo
@@ -36,6 +37,9 @@ class WeatherViewModel @Inject constructor(
     private val _currentWeather = MutableStateFlow<CurrentWeather>(CurrentWeather())
     val currentWeather: StateFlow<CurrentWeather> = _currentWeather.asStateFlow()
 
+    private val _todayWeather = MutableStateFlow<TodayWeather>(TodayWeather())
+    val todayWeather: StateFlow<TodayWeather> = _todayWeather.asStateFlow()
+
     private val _dailyForecast = MutableStateFlow<List<HourlyWeather>>(emptyList())
     val dailyForecast: StateFlow<List<HourlyWeather>> = _dailyForecast.asStateFlow()
 
@@ -60,7 +64,8 @@ class WeatherViewModel @Inject constructor(
                 _isLoading.value = false
                 _currentCity.value = "Berlin"
                 _currentWeather.value = weatherInfo.current
-                _hourlyForecast.value = weatherInfo?.hourly ?: emptyList()
+                _todayWeather.value = weatherInfo.today
+                _hourlyForecast.value = weatherInfo.hourly
             }
 
         }
@@ -74,6 +79,7 @@ class WeatherViewModel @Inject constructor(
                 Utils.showLog(weatherInfo.toString(), "--API-RESPONSE--->")
                 _currentCity.value = "Mülheim an der Ruhr"
                 _currentWeather.value = weatherInfo.current
+                _todayWeather.value = weatherInfo.today
                 _hourlyForecast.value = weatherInfo.hourly
             } catch (e: Exception) {
                 Utils.showLog(e.message.toString(), "--API-FAILURE--->")
