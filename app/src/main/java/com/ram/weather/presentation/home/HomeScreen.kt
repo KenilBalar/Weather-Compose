@@ -210,17 +210,17 @@ fun WeatherInfoSection(viewModel: WeatherViewModel = hiltViewModel()) {
             HorizontalDivider(thickness = 1.dp, color = getDividerColor())
             SpaceVertical(20)
             Row(modifier = Modifier.fillMaxWidth()) {
-                WeatherConditionView("Humidity", currentWeatherData.humidity.toString().plus("%"), Modifier.weight(1f))
-                WeatherConditionView("Dew point", currentWeatherData.dewPoint.toString().plus("°C"), Modifier.weight(1f))
-                WeatherConditionView("Pressure", currentWeatherData.pressure.toString().plus(" bar"), Modifier.weight(1f))
-                WeatherConditionView("Cloud cover", currentWeatherData.clouds.toString().plus("%"), Modifier.weight(1f))
+                WeatherConditionView(stringResource(R.string.humidity), currentWeatherData.humidity.toString().plus("%"), Modifier.weight(1f))
+                WeatherConditionView(stringResource(R.string.dew_point), currentWeatherData.dewPoint.toString().plus("°C"), Modifier.weight(1f))
+                WeatherConditionView(stringResource(R.string.pressure), currentWeatherData.pressure.toString().plus(" bar"), Modifier.weight(1f))
+                WeatherConditionView(stringResource(R.string.cloud_cover), currentWeatherData.clouds.toString().plus("%"), Modifier.weight(1f))
             }
             SpaceVertical(20)
             Row(modifier = Modifier.fillMaxWidth()) {
-                WeatherConditionView("Visibility", currentWeatherData.visibility.div(1000).toString().plus(" Km"), Modifier.weight(1f))
-                WeatherConditionView("UV index", currentWeatherData.uvi.roundToInt().toString(), Modifier.weight(1f))
-                WeatherConditionView("Wind speed", currentWeatherData.windSpeed.roundToInt().toString().plus(" Km/h"), Modifier.weight(1f))
-                WeatherConditionView("Wind degree", currentWeatherData.windDeg.toString().plus("%"), Modifier.weight(1f))
+                WeatherConditionView(stringResource(R.string.visibility), currentWeatherData.visibility.div(1000).toString().plus(" Km"), Modifier.weight(1f))
+                WeatherConditionView(stringResource(R.string.uv_index), currentWeatherData.uvi.roundToInt().toString(), Modifier.weight(1f))
+                WeatherConditionView(stringResource(R.string.wind_speed), currentWeatherData.windSpeed.roundToInt().toString().plus(" Km/h"), Modifier.weight(1f))
+                WeatherConditionView(stringResource(R.string.wind_degree), currentWeatherData.windDeg.toString().plus("%"), Modifier.weight(1f))
             }
             SpaceVertical(20)
             HorizontalDivider(thickness = 1.dp, color = getDividerColor())

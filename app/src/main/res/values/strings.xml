@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Weather</string>
     <string name="feels_like">"Feels like "</string>
+    <string name="humidity">Humidity</string>
+    <string name="dew_point">Dew point</string>
+    <string name="pressure">Pressure</string>
+    <string name="cloud_cover">Cloud cover</string>
+    <string name="visibility">Visibility</string>
+    <string name="uv_index">UV index</string>
+    <string name="wind_speed">Wind speed</string>
+    <string name="wind_degree">Wind degree</string>
 </resources>
