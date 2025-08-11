@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberUpdatedState
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,9 +33,12 @@ import com.ram.weather.data.viewModels.WeatherViewModel
 import com.ram.weather.presentation.components.ClickableImageView
 import com.ram.weather.presentation.components.ImageView
 import com.ram.weather.presentation.components.SpaceHorizontal
+import com.ram.weather.presentation.components.SpaceVertical
 import com.ram.weather.presentation.components.TextBold
 import com.ram.weather.presentation.components.TextMedium
+import com.ram.weather.presentation.components.TextRegular
 import com.ram.weather.ui.theme.getBlueColor
+import com.ram.weather.ui.theme.getDividerColor
 import com.ram.weather.ui.theme.getOnSurfaceColor
 import com.ram.weather.ui.theme.getRedColor
 import com.ram.weather.ui.theme.getSurfaceColor
@@ -129,54 +134,116 @@ fun WeatherInfoSection(viewModel: WeatherViewModel = hiltViewModel()) {
     var currentWeatherData = currentWeather.value
     var todayWeatherData = todayWeather.value
     Box(modifier = Modifier.padding(horizontal = 20.dp)) {
-        ConstraintLayout {
-            val (ivWeather, tvCurrentTemp, layoutTempHighLow, tvWeatherInfo, tvFeelsLike) = createRefs()
-            ImageView(
-                modifier = Modifier
-                    .size(96.dp)
-                    .constrainAs(ivWeather) {
-                        top.linkTo(parent.top);
-                        start.linkTo(parent.start)
-                    },
-                drawable = IconSelector.getIcon(currentWeatherData.condition.iconCode)
-            )
-            TextBold(
-                text = currentWeatherData.temperature.roundToInt().toString().plus("°"), fontSize = 36.sp,
-                modifier = Modifier
-                    .padding(start = 12.dp, top = 10.dp)
-                    .constrainAs(tvCurrentTemp) {
-                        start.linkTo(ivWeather.end);
-                        top.linkTo(ivWeather.top)
-                    })
 
-            Row(modifier = Modifier
-                .padding(top = 10.dp)
-                .constrainAs(layoutTempHighLow) {
-                    start.linkTo(tvCurrentTemp.end)
-                    end.linkTo(parent.end)
-                    top.linkTo(tvCurrentTemp.top)
-                    bottom.linkTo(tvCurrentTemp.bottom)
+        Column {
+            ConstraintLayout {
+                val (ivWeather, tvCurrentTemp, layoutTempHighLow, tvWeatherInfo, tvFeelsLike) = createRefs()
+                ImageView(
+                    modifier = Modifier
+                        .size(96.dp)
+                        .constrainAs(ivWeather) {
+                            top.linkTo(parent.top);
+                            start.linkTo(parent.start)
+                        },
+                    drawable = IconSelector.getIcon(currentWeatherData.condition.iconCode)
+                )
+                TextBold(
+                    text = currentWeatherData.temperature.roundToInt().toString().plus("°"), fontSize = 36.sp,
+                    modifier = Modifier
+                        .padding(start = 18.dp, top = 10.dp, end = 12.dp)
+                        .constrainAs(tvCurrentTemp) {
+                            start.linkTo(ivWeather.end);
+                            top.linkTo(ivWeather.top)
+                        })
+
+// Min-Max Temp Layout > Start
+                Row(
+                    modifier = Modifier
+                        .padding(start = 20.dp, top = 10.dp)
+                        .constrainAs(layoutTempHighLow) {
+                            start.linkTo(tvCurrentTemp.end);
+                            end.linkTo(parent.end);
+                            top.linkTo(tvCurrentTemp.top);
+                            bottom.linkTo(tvCurrentTemp.bottom)
+                        }) {
+
+                    ImageView(drawable = R.drawable.ic_temp_high)
+                    SpaceHorizontal(6)
+                    TextMedium(
+                        text = todayWeatherData.maxTemp.toDouble().roundToInt().toString().plus("°"),
+                        fontSize = 16.sp,
+                        color = getRedColor()
+                    )
+                    SpaceHorizontal(10)
+                    ImageView(drawable = R.drawable.ic_temp_low)
+                    SpaceHorizontal(6)
+                    TextMedium(
+                        text = todayWeatherData.minTemp.toDouble().roundToInt().toString().plus("°"),
+                        fontSize = 16.sp,
+                        color = getBlueColor()
+                    )
                 }
-                .padding(start = 20.dp)) {
+//Min-Max Temp Layout > End
 
-                ImageView(drawable = R.drawable.ic_temp_high)
-                SpaceHorizontal(6)
-                TextBold(
-                    text = todayWeatherData.maxTemp.toDouble().roundToInt().toString().plus("°"),
-                    fontSize = 16.sp,
-                    color = getRedColor()
-                )
-                SpaceHorizontal(10)
-                ImageView(drawable = R.drawable.ic_temp_low)
-                SpaceHorizontal(6)
-                TextBold(
-                    text = todayWeatherData.minTemp.toDouble().roundToInt().toString().plus("°"),
-                    fontSize = 16.sp,
-                    color = getBlueColor()
-                )
+                TextMedium(
+                    text = currentWeatherData.condition.description,
+                    fontSize = 20.sp,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .constrainAs(tvWeatherInfo) {
+                            start.linkTo(tvCurrentTemp.start);
+                            top.linkTo(tvCurrentTemp.bottom)
+                        })
+
+                TextRegular(
+                    text = stringResource(R.string.feels_like) + "${currentWeatherData.feelsLike.roundToInt()}°",
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .padding(start = 18.dp, top = 2.dp, end = 12.dp)
+                        .constrainAs(tvFeelsLike) {
+                            start.linkTo(tvWeatherInfo.start);
+                            top.linkTo(tvWeatherInfo.bottom)
+                        })
             }
 
+            SpaceVertical(30)
+            HorizontalDivider(thickness = 1.dp, color = getDividerColor())
+            SpaceVertical(20)
+            Row(modifier = Modifier.fillMaxWidth()) {
+                WeatherConditionView("Humidity", currentWeatherData.humidity.toString().plus("%"), Modifier.weight(1f))
+                WeatherConditionView("Dew point", currentWeatherData.dewPoint.toString().plus("°C"), Modifier.weight(1f))
+                WeatherConditionView("Pressure", currentWeatherData.pressure.toString().plus(" bar"), Modifier.weight(1f))
+                WeatherConditionView("Cloud cover", currentWeatherData.clouds.toString().plus("%"), Modifier.weight(1f))
+            }
+            SpaceVertical(20)
+            Row(modifier = Modifier.fillMaxWidth()) {
+                WeatherConditionView("Visibility", currentWeatherData.visibility.div(1000).toString().plus(" Km"), Modifier.weight(1f))
+                WeatherConditionView("UV index", currentWeatherData.uvi.roundToInt().toString(), Modifier.weight(1f))
+                WeatherConditionView("Wind speed", currentWeatherData.windSpeed.roundToInt().toString().plus(" Km/h"), Modifier.weight(1f))
+                WeatherConditionView("Wind degree", currentWeatherData.windDeg.toString().plus("%"), Modifier.weight(1f))
+            }
+            SpaceVertical(20)
+            HorizontalDivider(thickness = 1.dp, color = getDividerColor())
+            SpaceVertical(30)
+
         }
+
+    }
+}
+
+@Composable
+fun WeatherConditionView(title: String, value: String, modifier: Modifier) {
+    return Column(modifier = modifier) {
+        TextBold(
+            text = title,
+            fontSize = 12.sp,
+            color = getOnSurfaceColor()
+        )
+        TextMedium(
+            text = value,
+            fontSize = 16.sp,
+            color = getOnSurfaceColor()
+        )
     }
 }
 
