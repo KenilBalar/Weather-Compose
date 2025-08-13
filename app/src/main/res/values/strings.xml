@@ -9,4 +9,6 @@
     <string name="uv_index">UV index</string>
     <string name="wind_speed">Wind speed</string>
     <string name="wind_degree">Wind degree</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
 </resources>

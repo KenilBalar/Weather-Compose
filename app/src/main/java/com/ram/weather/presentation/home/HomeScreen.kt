@@ -9,16 +9,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -29,6 +32,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ram.weather.R
 import com.ram.weather.data.IconSelector
+import com.ram.weather.data.model.CurrentWeather
 import com.ram.weather.data.viewModels.WeatherViewModel
 import com.ram.weather.presentation.components.ClickableImageView
 import com.ram.weather.presentation.components.ImageView
@@ -95,7 +99,6 @@ fun TemperatureSegment(viewModel: WeatherViewModel = hiltViewModel()) {
 //@Preview(showBackground = true)
 @Composable
 fun TopBar(viewModel: WeatherViewModel = hiltViewModel()) {
-    var context = LocalContext.current
     val currentCity = viewModel.currentCity.collectAsState()
 
     Utils.showLog("TopBar Updated...")
@@ -225,14 +228,40 @@ fun WeatherInfoSection(viewModel: WeatherViewModel = hiltViewModel()) {
             SpaceVertical(20)
             HorizontalDivider(thickness = 1.dp, color = getDividerColor())
             SpaceVertical(30)
-
+            SunProgressView(currentWeatherData)
         }
-
     }
 }
 
 @Composable
-fun WeatherConditionView(title: String, value: String, modifier: Modifier) {
+fun SunProgressView(currentWeatherData: CurrentWeather){
+    Column {
+        Row(modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                ImageView(modifier = Modifier.size(48.dp),
+                    drawable = IconSelector.getIcon("01d")
+                )
+                SpaceHorizontal(10)
+                SunInfoLabel(stringResource(R.string.sunrise), Utils.formatTimeFromEpoch(currentWeatherData.sunrise,false))
+            }
+            Row(verticalAlignment = Alignment.CenterVertically){
+                SunInfoLabel(stringResource(R.string.sunset),Utils.formatTimeFromEpoch(currentWeatherData.sunset,false),Alignment.End)
+                SpaceHorizontal(10)
+                ImageView(modifier = Modifier
+                    .size(48.dp)
+                    .alpha(0.6f),
+                    drawable = IconSelector.getIcon("01d")
+                )
+            }
+        }
+    }
+
+}
+
+@Composable
+fun WeatherConditionView(title: String , value: String, modifier: Modifier) {
     return Column(modifier = modifier) {
         TextBold(
             text = title,
@@ -247,7 +276,23 @@ fun WeatherConditionView(title: String, value: String, modifier: Modifier) {
     }
 }
 
-@Preview(showBackground = true)
+@Composable
+fun SunInfoLabel(title: String , value: String, horizontalAlignment: Alignment.Horizontal = Alignment.Start) {
+    return Column(horizontalAlignment = horizontalAlignment) {
+        TextRegular(
+            text = title,
+            fontSize = 16.sp,
+            color = getOnSurfaceColor()
+        )
+        SpaceVertical(2)
+        TextBold(
+            text = value,
+            fontSize = 14.sp,
+            color = getOnSurfaceColor()
+        )
+    }
+}
+
 @Composable
 fun HomePreview() {
     HomeUI()
